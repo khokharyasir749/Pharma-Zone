@@ -8,14 +8,8 @@ import {
   Minus,
   ShoppingCart,
   ShieldCheck,
-  Check,
   MessageCircle,
-  FileText,
   AlertCircle,
-  Clock,
-  Sparkles,
-  Heart,
-  ThermometerSnowflake,
 } from "lucide-react";
 import { usePharmacy } from "@/context/PharmacyContext";
 import { MedicineVisual } from "@/components/pharmacy/MedicineVisual";
@@ -26,34 +20,33 @@ export function ProductDetailModal() {
     setQuickViewMedicine,
     cart,
     addToCart,
-    updateQuantity,
     setIsCartOpen,
   } = usePharmacy();
 
   const [quantity, setQuantity] = useState(1);
-  const [addedNotice, setAddedNotice] = useState(false);
 
   if (!quickViewMedicine) return null;
 
   const medicine = quickViewMedicine;
   const cartItem = cart.find((item) => item.medicine.id === medicine.id);
   const currentInCart = cartItem?.quantity || 0;
+  const totalPrice = medicine.pricePKR * quantity;
 
   const handleAddToCart = () => {
     addToCart(medicine, quantity);
-    setAddedNotice(true);
-    setTimeout(() => setAddedNotice(false), 2000);
+    setQuickViewMedicine(null);
+    setQuantity(1);
+    setIsCartOpen(true);
   };
 
   const handleClose = () => {
     setQuickViewMedicine(null);
     setQuantity(1);
-    setAddedNotice(false);
   };
 
-  // WhatsApp order link prefilled with medicine details
+  // WhatsApp order link dynamically constructed with selected quantity and total price
   const whatsAppMessage = encodeURIComponent(
-    `Hello PharmaZone, I want to order:\nMedicine: ${medicine.name}\nStrength: ${medicine.strength || medicine.dosageForm}\nPack Size: ${medicine.packSize || "Standard"}\nPrice: PKR ${medicine.pricePKR}\nFormula: ${medicine.genericFormula}`
+    `Hello PharmaZone, I want to order ${quantity}x ${medicine.name} (Total: PKR ${totalPrice.toLocaleString()}).\nPack Size: ${medicine.packSize || medicine.dosageForm}\nFormula: ${medicine.genericFormula}`
   );
   const whatsAppUrl = `https://wa.me/923280790704?text=${whatsAppMessage}`;
 
@@ -74,10 +67,10 @@ export function ProductDetailModal() {
 
         {/* Modal Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 overflow-y-auto flex-1">
-          {/* Left Column: Medicine Vector Visual Display */}
-          <div className="md:col-span-5 bg-[#F6F9F7] p-6 sm:p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-200/80 relative">
+          {/* Left Column: Polished Medicine Vector Visual Display */}
+          <div className="md:col-span-5 bg-[#F6F9F7] p-6 sm:p-7 flex flex-col justify-between border-b md:border-b-0 md:border-r border-slate-200/80 relative">
             {/* Top Badges */}
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2 mb-4">
               <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#EAF3EE] text-[#084236] font-extrabold text-xs border border-[#084236]/15">
                 {medicine.discountPercent && medicine.discountPercent > 0
                   ? `${medicine.discountPercent}% OFF`
@@ -95,22 +88,22 @@ export function ProductDetailModal() {
               )}
             </div>
 
-            {/* High-res vector medicine visual */}
-            <div className="py-6 flex items-center justify-center">
-              <div className="w-48 h-48 sm:w-56 sm:h-56">
+            {/* Enlarged Vector Visual Container with Sleek Gradient & Soft Shadow */}
+            <div className="w-full flex-1 min-h-[240px] sm:min-h-[270px] rounded-2xl bg-gradient-to-br from-[#F4F8F6] to-[#EBF3EF] p-4 flex items-center justify-center shadow-inner border border-emerald-900/10 group/visual relative overflow-hidden mb-4">
+              <div className="w-full h-full flex items-center justify-center group-hover/visual:scale-105 group-hover/visual:-rotate-1 transition-all duration-300">
                 <MedicineVisual
                   name={medicine.name}
                   dosageForm={medicine.dosageForm}
                   category={medicine.category}
                   brand={medicine.brand}
                   strength={medicine.strength}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full max-h-56 object-contain flex items-center justify-center"
                 />
               </div>
             </div>
 
             {/* Bottom Trust Tag */}
-            <div className="bg-white/80 backdrop-blur-xs rounded-2xl p-3 border border-slate-200/60 text-center space-y-1">
+            <div className="bg-white/90 backdrop-blur-xs rounded-2xl p-3 border border-slate-200/60 text-center space-y-1">
               <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-[#084236]">
                 <ShieldCheck className="w-4 h-4 text-[#10B981]" />
                 <span>100% Genuine Pakistani Distributor</span>
@@ -184,7 +177,7 @@ export function ProductDetailModal() {
                 </h4>
                 <p className="text-xs text-slate-600 leading-relaxed bg-[#F6F9F7] p-3 rounded-2xl border border-slate-200/60">
                   {medicine.description ||
-                    "Take as advised by your physician. Swallow whole with water, preferably after meals. Do not exceed the recommended daily dose."}
+                    "Take as advised by your physician. Swallow whole with water, preferably after meals. Store in a cool, dry place away from sunlight."}
                 </p>
               </div>
 
@@ -205,8 +198,9 @@ export function ProductDetailModal() {
                 {/* Quantity Controller */}
                 <div className="flex items-center gap-3 bg-[#F6F8F6] border border-slate-200 rounded-2xl px-3 py-2">
                   <button
+                    type="button"
                     onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                    className="w-7 h-7 rounded-xl bg-white hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors shadow-2xs"
+                    className="w-7 h-7 rounded-xl bg-white hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors shadow-2xs cursor-pointer"
                     aria-label="Decrease quantity"
                   >
                     <Minus className="w-3.5 h-3.5" />
@@ -215,34 +209,34 @@ export function ProductDetailModal() {
                     {quantity}
                   </span>
                   <button
+                    type="button"
                     onClick={() => setQuantity((prev) => prev + 1)}
-                    className="w-7 h-7 rounded-xl bg-white hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors shadow-2xs"
+                    className="w-7 h-7 rounded-xl bg-white hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors shadow-2xs cursor-pointer"
                     aria-label="Increase quantity"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                {/* Add to Cart Button */}
+                {/* Add to Cart Button (Dynamically updates with exact quantity and price) */}
                 <button
+                  type="button"
                   onClick={handleAddToCart}
-                  className="flex-1 flex items-center justify-center gap-2 bg-[#084236] hover:bg-[#052e25] text-white font-extrabold text-xs sm:text-sm py-3 px-5 rounded-2xl shadow-lg shadow-[#084236]/20 transition-all active:scale-95"
+                  className="flex-1 flex items-center justify-center gap-2 bg-[#084236] hover:bg-[#052e25] text-white font-extrabold text-xs sm:text-sm py-3 px-5 rounded-2xl shadow-lg shadow-[#084236]/20 transition-all active:scale-95 cursor-pointer"
                 >
                   <ShoppingCart className="w-4 h-4" />
                   <span>
-                    {addedNotice
-                      ? "Added to Cart!"
-                      : `Add ${quantity} to Cart (PKR ${(medicine.pricePKR * quantity).toLocaleString()})`}
+                    Add {quantity} to Cart (PKR {totalPrice.toLocaleString()})
                   </span>
                 </button>
               </div>
 
-              {/* Direct WhatsApp Order CTA */}
+              {/* Direct WhatsApp Order CTA (Dynamically constructed with quantity and total) */}
               <a
                 href={whatsAppUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-2xl transition-all shadow-md active:scale-95"
+                className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-2xl transition-all shadow-md active:scale-95 cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4 fill-white" />
                 <span>Order via WhatsApp (0328-0790704)</span>
@@ -251,13 +245,14 @@ export function ProductDetailModal() {
               {currentInCart > 0 && (
                 <div className="text-center">
                   <button
+                    type="button"
                     onClick={() => {
                       handleClose();
                       setIsCartOpen(true);
                     }}
-                    className="text-xs text-[#084236] hover:underline font-bold"
+                    className="text-xs text-[#084236] hover:underline font-bold cursor-pointer"
                   >
-                    You have {currentInCart} in your cart • View Cart
+                    You already have {currentInCart} in your cart • View Cart
                   </button>
                 </div>
               )}

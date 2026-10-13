@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import {
   MapPin,
   Search,
@@ -102,12 +103,28 @@ export function Navbar({
             </button>
           </div>
 
-          {/* Right: Express Delivery & Contact */}
+          {/* Right: Quick Links, Express Delivery & Contact */}
           <div className="hidden sm:flex items-center gap-4 text-xs font-medium text-slate-700">
-            <span className="flex items-center gap-1 text-[#084236] font-semibold">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              Free 2-Hour Express Delivery on orders over PKR 1,500
-            </span>
+            <Link
+              href="/track-order"
+              className="text-slate-600 hover:text-[#084236] font-semibold transition-colors"
+            >
+              Track Order
+            </Link>
+            <span className="text-slate-300">|</span>
+            <Link
+              href="/categories"
+              className="text-slate-600 hover:text-[#084236] font-semibold transition-colors"
+            >
+              Categories
+            </Link>
+            <span className="text-slate-300">|</span>
+            <Link
+              href="/contact"
+              className="text-slate-600 hover:text-[#084236] font-semibold transition-colors"
+            >
+              Support
+            </Link>
             <span className="text-slate-300">|</span>
             <a
               href="tel:+923280790704"
@@ -123,9 +140,9 @@ export function Navbar({
       {/* 2. Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
         <div className="flex items-center justify-between gap-3 lg:gap-6">
-          {/* Brand Logo: "Pharma Zone" in bold dark forest green with a sleek medical badge */}
+          {/* Brand Logo: Wrapped in Link to return home cleanly */}
           <div className="flex items-center gap-3 shrink-0">
-            <div className="flex items-center gap-2.5 cursor-pointer group">
+            <Link href="/" className="flex items-center gap-2.5 cursor-pointer group">
               <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#084236] flex items-center justify-center text-white shadow-md shadow-[#084236]/20 group-hover:bg-[#052e25] transition-all duration-300">
                 {/* Sleek Medical Badge */}
                 <div className="relative flex items-center justify-center">
@@ -151,7 +168,7 @@ export function Navbar({
                   Pakistani E-Pharmacy
                 </span>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Unified Pill Search (Center) */}
@@ -282,15 +299,16 @@ export function Navbar({
               )}
             </button>
 
-            {/* User Profile Avatar */}
-            <div
+            {/* User Profile / Quick Contact Link */}
+            <Link
+              href="/contact"
               className="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-600 to-[#084236] p-0.5 flex items-center justify-center cursor-pointer shadow-sm hover:ring-2 hover:ring-[#10B981]/50 transition-all"
-              title="Verified Patient Account"
+              title="Verified Patient Support Desk"
             >
               <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-[#084236]">
                 <User className="w-4 h-4 text-[#084236]" />
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

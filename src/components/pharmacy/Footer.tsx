@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import Link from "next/link";
 import {
   ShieldCheck,
   Truck,
@@ -11,10 +14,13 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { PAKISTAN_CITIES } from "@/data/medicines";
+import { usePharmacy } from "@/context/PharmacyContext";
 
 export function Footer() {
+  const { setSelectedCategory, setIsPrescriptionModalOpen } = usePharmacy();
+
   return (
-    <footer className="bg-brand-dark text-white border-t border-brand-primary/40 mt-20">
+    <footer className="bg-brand-dark text-white border-t border-brand-primary/40 mt-16 sm:mt-20">
       {/* Trust Badges Strip */}
       <div className="border-b border-white/10 py-10 bg-brand-primary/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,16 +81,16 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand Intro */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-3">
+            <Link href="/" className="inline-flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-brand-accent flex items-center justify-center text-brand-dark font-black text-xl">
                 P
               </div>
               <span className="font-extrabold text-2xl tracking-tight text-white font-display">
                 PHARMA <span className="text-brand-accent">ZONE</span>
               </span>
-            </div>
+            </Link>
             <p className="text-sm text-brand-mint/80 max-w-sm leading-relaxed">
-              Pharma Zone is Pakistan's forward-thinking digital healthcare and e-pharmacy platform, committed to delivering genuine prescription medications, surgical supplies, and wellness care straight to your doorstep.
+              Pharma Zone is Pakistan's digital healthcare and e-pharmacy platform, committed to delivering genuine prescription medications, surgical supplies, and wellness care straight to your doorstep.
             </p>
             <div className="space-y-2.5 text-xs text-brand-mint/70">
               <div className="flex items-center gap-2">
@@ -119,18 +125,46 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Categories */}
+          {/* Quick Links */}
           <div>
             <h4 className="font-bold text-sm text-white uppercase tracking-wider mb-4">
-              Categories
+              Explore Store
             </h4>
-            <ul className="space-y-2 text-xs text-brand-mint/75">
-              <li><a href="#" className="hover:text-white transition-colors">Pain & Fever</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Antibiotics & Anti-Infectives</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Stomach & Acidity (PPIs)</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Vitamins & Supplements</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Cough, Cold & Allergy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Nausea & Travel Relief</a></li>
+            <ul className="space-y-2.5 text-xs text-brand-mint/75">
+              <li>
+                <Link href="/" className="hover:text-white transition-colors">
+                  Home & Flash Sale
+                </Link>
+              </li>
+              <li>
+                <Link href="/categories" className="hover:text-white transition-colors">
+                  Therapeutic Categories
+                </Link>
+              </li>
+              <li>
+                <Link href="/track-order" className="hover:text-white transition-colors">
+                  Track Delivery Status
+                </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setIsPrescriptionModalOpen(true)}
+                  className="hover:text-white transition-colors text-left"
+                >
+                  Upload Doctor's Slip
+                </button>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-white transition-colors">
+                  About DRAP Certification
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-white transition-colors">
+                  Contact & Support
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -172,11 +206,11 @@ export function Footer() {
         <div className="border-t border-white/10 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-mint/60 gap-4">
           <p>© {new Date().getFullYear()} Pharma Zone Pakistan. Licensed by DRAP under Drug Act 1976.</p>
           <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-white">Privacy Policy</a>
+            <Link href="/about" className="hover:text-white">DRAP Compliance</Link>
             <span>•</span>
-            <a href="#" className="hover:text-white">Terms of Sale</a>
+            <Link href="/contact" className="hover:text-white">Help Desk</Link>
             <span>•</span>
-            <a href="#" className="hover:text-white">Prescription Policy</a>
+            <Link href="/track-order" className="hover:text-white">Track Order</Link>
           </div>
         </div>
       </div>
