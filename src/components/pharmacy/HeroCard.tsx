@@ -17,7 +17,6 @@ import { usePharmacy } from "@/context/PharmacyContext";
 
 export function HeroCard() {
   const { selectedCity, setIsPrescriptionModalOpen } = usePharmacy();
-  const [imageError, setImageError] = useState(false);
 
   const scrollToProducts = () => {
     const el = document.getElementById("flash-sale-section");
@@ -120,26 +119,13 @@ export function HeroCard() {
                 <div className="absolute top-18 sm:top-20 w-48 h-48 rounded-full border border-emerald-700/15 pointer-events-none" />
                 <div className="absolute top-24 w-32 h-32 rounded-full bg-white/40 blur-xl pointer-events-none" />
 
-                {/* High-Resolution Verified Medical Portrait with Elegant Fallback */}
-                {!imageError ? (
-                  <img
-                    src="https://images.unsplash.com/photo-1594824813589-322f280a9d8c?auto=format&fit=crop&w=800&q=85"
-                    alt="Licensed Clinical Pharmacist and Medical Doctor at Pharma Zone"
-                    className="relative z-10 w-full h-full object-cover object-top transition-transform duration-700 hover:scale-[1.03] select-none"
-                    onError={() => setImageError(true)}
-                    loading="eager"
-                  />
-                ) : (
-                  <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 text-center text-[#084236]">
-                    <div className="w-20 h-20 rounded-full bg-white/80 shadow-md flex items-center justify-center mb-3">
-                      <ShieldCheck className="w-10 h-10 text-[#084236]" />
-                    </div>
-                    <div className="font-extrabold text-base">Pharma Zone Clinical Team</div>
-                    <div className="text-xs text-emerald-800/80 mt-1 max-w-[200px]">
-                      DRAP Verified Pharm-D & Healthcare Consultants
-                    </div>
-                  </div>
-                )}
+                {/* High-Resolution Verified Medical Portrait (Static Local Asset) */}
+                <img
+                  src="/images/doctor.png"
+                  alt="Licensed Clinical Pharmacist and Medical Doctor at Pharma Zone"
+                  className="relative z-10 w-full h-full object-cover object-top transition-transform duration-700 hover:scale-[1.03] select-none"
+                  loading="eager"
+                />
 
                 {/* Subtle soft bottom shadow overlay */}
                 <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#084236]/25 to-transparent z-10 pointer-events-none" />
