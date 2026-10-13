@@ -28,6 +28,8 @@ interface PharmacyContextType {
   // Quick View Modal state
   quickViewMedicine: Medicine | null;
   setQuickViewMedicine: (medicine: Medicine | null) => void;
+  // Mounted state guard for client hydration
+  isMounted: boolean;
 }
 
 const PharmacyContext = createContext<PharmacyContextType | undefined>(undefined);
@@ -42,9 +44,11 @@ export function PharmacyProvider({ children }: { children: React.ReactNode }) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [quickViewMedicine, setQuickViewMedicine] = useState<Medicine | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Restore cart and city from localStorage on mount
+  // Restore cart and city from localStorage strictly on mount
   useEffect(() => {
+    setIsMounted(true);
     try {
       const storedCity = localStorage.getItem("pharma_zone_city") as PakistanCity | null;
       if (storedCity) {
@@ -145,6 +149,7 @@ export function PharmacyProvider({ children }: { children: React.ReactNode }) {
         setSelectedCategory,
         quickViewMedicine,
         setQuickViewMedicine,
+        isMounted,
       }}
     >
       {children}
