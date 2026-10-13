@@ -22,15 +22,32 @@ export function MedicineVisual({
 }: MedicineVisualProps) {
   // Determine color theme based on category or name
   const isAntibiotic =
-    category.includes("Antibiotic") || name.toLowerCase().includes("augmentin") || name.toLowerCase().includes("leflox");
+    category.includes("Antibiotic") ||
+    name.toLowerCase().includes("augmentin") ||
+    name.toLowerCase().includes("leflox") ||
+    name.toLowerCase().includes("klaricid");
   const isPain =
-    category.includes("Pain") || name.toLowerCase().includes("panadol") || name.toLowerCase().includes("disprin") || name.toLowerCase().includes("brufen");
+    category.includes("Pain") ||
+    name.toLowerCase().includes("panadol") ||
+    name.toLowerCase().includes("disprin") ||
+    name.toLowerCase().includes("brufen") ||
+    name.toLowerCase().includes("ponstan");
   const isStomach =
-    category.includes("Gastro") || category.includes("Stomach") || name.toLowerCase().includes("risek") || name.toLowerCase().includes("entox");
+    category.includes("Gastro") ||
+    category.includes("Stomach") ||
+    name.toLowerCase().includes("risek") ||
+    name.toLowerCase().includes("entox") ||
+    name.toLowerCase().includes("motilium");
   const isVitamin =
     category.includes("Vitamin") || name.toLowerCase().includes("surbex") || name.toLowerCase().includes("cac");
   const isAllergy =
-    category.includes("Cold") || category.includes("Allergy") || name.toLowerCase().includes("softin") || name.toLowerCase().includes("arinac");
+    category.includes("Cold") ||
+    category.includes("Allergy") ||
+    name.toLowerCase().includes("softin") ||
+    name.toLowerCase().includes("arinac") ||
+    name.toLowerCase().includes("rigix") ||
+    name.toLowerCase().includes("hydryllin") ||
+    name.toLowerCase().includes("cf");
 
   const primaryColor = isPain
     ? "#EF4444" // Crimson / Red
@@ -56,8 +73,8 @@ export function MedicineVisual({
     ? "#EDE9FE"
     : "#EAF3EE";
 
-  // 1. Suspension / Syrup bottles (e.g. Entox-P)
-  if (dosageForm === "Syrup" || dosageForm === "Suspension") {
+  // 1. Suspension / Syrup / Drops bottles (e.g. Entox-P, Hydryllin, Panadol Drops)
+  if (dosageForm === "Syrup" || dosageForm === "Suspension" || dosageForm === "Drops") {
     return (
       <div className={`relative flex items-center justify-center p-2 select-none ${className}`}>
         {/* Ambient shadow below bottle */}
@@ -282,11 +299,13 @@ export function MedicineVisual({
     );
   }
 
-  // 4. Blister Foil Strips (e.g., Arinac, Gravinate, Flagyl)
+  // 4. Blister Foil Strips (e.g., Arinac, Gravinate, Flagyl tablets, Rigix, Motilium)
   if (
-    name.toLowerCase().includes("arinac") ||
-    name.toLowerCase().includes("gravinate") ||
-    name.toLowerCase().includes("flagyl")
+    (name.toLowerCase().includes("arinac") && dosageForm === "Tablet") ||
+    (name.toLowerCase().includes("gravinate") && dosageForm === "Tablet") ||
+    (name.toLowerCase().includes("flagyl") && dosageForm === "Tablet") ||
+    name.toLowerCase().includes("rigix") ||
+    name.toLowerCase().includes("motilium")
   ) {
     return (
       <div className={`relative flex items-center justify-center p-2 select-none ${className}`}>

@@ -35,10 +35,10 @@ export function CategoryBar({
       <div className="flex items-center gap-2 sm:gap-2.5 min-w-max pb-1">
         <button
           onClick={() => onSelectCategory(null)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 border ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 border cursor-pointer active:scale-95 ${
             selectedCategory === null
               ? "bg-[#084236] text-white border-[#084236] shadow-sm"
-              : "bg-white text-slate-700 hover:bg-[#EAF3EE] border-slate-200/80"
+              : "bg-white text-slate-700 hover:bg-[#EAF3EE] hover:text-[#084236] border-slate-200/80 shadow-2xs"
           }`}
         >
           <LayoutGrid className="w-3.5 h-3.5" />
@@ -51,10 +51,10 @@ export function CategoryBar({
             <button
               key={category.id}
               onClick={() => onSelectCategory(isSelected ? null : category.name)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 border ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all duration-200 border cursor-pointer active:scale-95 ${
                 isSelected
                   ? "bg-[#084236] text-white border-[#084236] shadow-sm"
-                  : "bg-white text-slate-700 hover:bg-[#EAF3EE] border-slate-200/80"
+                  : "bg-white text-slate-700 hover:bg-[#EAF3EE] hover:text-[#084236] border-slate-200/80 shadow-2xs"
               }`}
             >
               <span className={isSelected ? "text-[#10B981]" : "text-[#059669]"}>

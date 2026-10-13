@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   MapPin,
@@ -14,6 +14,7 @@ import {
   User,
   Copy,
   Check,
+  X,
 } from "lucide-react";
 import { usePharmacy } from "@/context/PharmacyContext";
 import { PAKISTAN_CITIES, CATEGORIES } from "@/data/medicines";
@@ -45,7 +46,27 @@ export function Navbar({
   } = usePharmacy();
 
   const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+
+  const categoryRef = useRef<HTMLDivElement>(null);
+  const cityRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
+        setIsCategoryOpen(false);
+      }
+      if (cityRef.current && !cityRef.current.contains(event.target as Node)) {
+        setCityDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const currentSearch = searchQuery !== undefined ? searchQuery : ctxSearchQuery;
   const handleSearchChange = (val: string) => {
@@ -177,27 +198,70 @@ export function Navbar({
             className="flex-1 max-w-2xl mx-1 sm:mx-2"
           >
             <div className="relative flex items-center w-full bg-white rounded-full border border-slate-200/90 shadow-sm hover:border-[#084236]/30 focus-within:border-[#084236] focus-within:ring-2 focus-within:ring-[#084236]/15 transition-all p-1.5 pl-3 sm:pl-4">
-              {/* Category dropdown selector inside with divider */}
-              <div className="relative shrink-0 pr-2 sm:pr-3 mr-2 sm:mr-3 border-r border-slate-200">
-                <select
-                  value={currentCategory || "all"}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    handleCategoryChange(val === "all" ? null : val);
-                  }}
-                  className="bg-transparent text-xs font-semibold text-slate-700 hover:text-[#084236] focus:outline-none cursor-pointer pr-4 appearance-none text-ellipsis max-w-[95px] sm:max-w-[130px]"
+              {/* Custom Category Dropdown Popover */}
+              <div ref={categoryRef} className="relative shrink-0 pr-2 sm:pr-3 mr-2 sm:mr-3 border-r border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-[#084236] focus:outline-none transition-colors max-w-[105px] sm:max-w-[145px] text-left cursor-pointer"
+                  title={currentCategory || "All Categories"}
                 >
-                  <option value="all">All Categories</option>
-                  {CATEGORIES.map((cat) => (
-                    <option key={cat.id} value={cat.name}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="w-3 h-3 text-slate-400 pointer-events-none absolute right-0 top-1/2 -translate-y-1/2" />
+                  <span className="truncate">{currentCategory || "All Categories"}</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform duration-200 ${
+                      isCategoryOpen ? "rotate-180 text-[#084236]" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Floating Popover Card */}
+                {isCategoryOpen && (
+                  <div className="absolute top-full left-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                    <div className="px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                      Therapeutic Categories
+                    </div>
+                    <div className="max-h-72 overflow-y-auto space-y-0.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleCategoryChange(null);
+                          setIsCategoryOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-xl transition-all flex items-center justify-between cursor-pointer ${
+                          !currentCategory
+                            ? "bg-[#EAF3EE] text-[#084236] font-bold"
+                            : "text-slate-700 hover:bg-[#EAF3EE] hover:text-[#084236]"
+                        }`}
+                      >
+                        <span>All Categories</span>
+                        {!currentCategory && <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />}
+                      </button>
+                      {CATEGORIES.map((cat) => (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => {
+                            handleCategoryChange(cat.name);
+                            setIsCategoryOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 text-xs font-semibold rounded-xl transition-all flex items-center justify-between cursor-pointer ${
+                            currentCategory === cat.name
+                              ? "bg-[#EAF3EE] text-[#084236] font-bold"
+                              : "text-slate-700 hover:bg-[#EAF3EE] hover:text-[#084236]"
+                          }`}
+                        >
+                          <span className="truncate pr-2">{cat.name}</span>
+                          {currentCategory === cat.name && (
+                            <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Clean text input for medicines / active salts */}
+              {/* Clean text input for medicines / active salts with live auto-reset */}
               <input
                 type="text"
                 value={currentSearch}
@@ -209,13 +273,16 @@ export function Navbar({
                 className="w-full bg-transparent text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none font-medium truncate"
               />
 
+              {/* Instant Clear 'X' Button */}
               {currentSearch && (
                 <button
                   type="button"
                   onClick={() => handleSearchChange("")}
-                  className="text-xs text-slate-400 hover:text-slate-600 px-2 py-0.5 mr-1"
+                  className="p-1 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors mr-1 shrink-0 cursor-pointer"
+                  title="Clear search and view all medicines"
+                  aria-label="Clear search"
                 >
-                  Clear
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
 
@@ -233,7 +300,7 @@ export function Navbar({
           {/* Right Utility Group */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {/* "Deliver to [City]" widget with location pin and dropdown */}
-            <div className="relative">
+            <div ref={cityRef} className="relative">
               <button
                 onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-[#EAF3EE] hover:bg-[#dceeea] text-[#084236] text-xs font-semibold border border-[#084236]/10 transition-colors"
