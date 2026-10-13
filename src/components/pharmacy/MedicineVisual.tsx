@@ -37,9 +37,18 @@ export function MedicineVisual({
     category.includes("Stomach") ||
     name.toLowerCase().includes("risek") ||
     name.toLowerCase().includes("entox") ||
-    name.toLowerCase().includes("motilium");
+    name.toLowerCase().includes("motilium") ||
+    name.toLowerCase().includes("nexum") ||
+    name.toLowerCase().includes("gaviscon") ||
+    name.toLowerCase().includes("duspatalin");
   const isVitamin =
-    category.includes("Vitamin") || name.toLowerCase().includes("surbex") || name.toLowerCase().includes("cac");
+    category.includes("Vitamin") ||
+    name.toLowerCase().includes("surbex") ||
+    name.toLowerCase().includes("cac") ||
+    name.toLowerCase().includes("sunny") ||
+    name.toLowerCase().includes("neurobion") ||
+    name.toLowerCase().includes("sangobion") ||
+    name.toLowerCase().includes("evion");
   const isAllergy =
     category.includes("Cold") ||
     category.includes("Allergy") ||
@@ -48,6 +57,13 @@ export function MedicineVisual({
     name.toLowerCase().includes("rigix") ||
     name.toLowerCase().includes("hydryllin") ||
     name.toLowerCase().includes("cf");
+  const isNausea =
+    category.includes("Nausea") ||
+    category.includes("Motion") ||
+    name.toLowerCase().includes("gravinate") ||
+    name.toLowerCase().includes("vomilux") ||
+    name.toLowerCase().includes("stemetil") ||
+    name.toLowerCase().includes("avomine");
 
   const primaryColor = isPain
     ? "#EF4444" // Crimson / Red
@@ -59,6 +75,8 @@ export function MedicineVisual({
     ? "#F59E0B" // Amber / Gold
     : isAllergy
     ? "#8B5CF6" // Purple / Violet
+    : isNausea
+    ? "#0D9488" // Teal / Turquoise
     : "#084236"; // Brand Dark Green
 
   const secondaryColor = isPain
@@ -71,6 +89,8 @@ export function MedicineVisual({
     ? "#FEF3C7"
     : isAllergy
     ? "#EDE9FE"
+    : isNausea
+    ? "#CCFBF1"
     : "#EAF3EE";
 
   // 1. Suspension / Syrup / Drops bottles (e.g. Entox-P, Hydryllin, Panadol Drops)

@@ -69,6 +69,9 @@ export default function CategoriesPage() {
         {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {CATEGORIES.map((category) => {
+            const count = MEDICINES_DATA.filter(
+              (m) => m.category === category.name
+            ).length;
             const sampleMeds = MEDICINES_DATA.filter(
               (m) => m.category === category.name
             ).slice(0, 3);
@@ -86,8 +89,8 @@ export default function CategoriesPage() {
                         {ICON_MAP[category.icon] || <Pill className="w-6 h-6 text-emerald-600" />}
                       </div>
                     </div>
-                    <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-                      {category.itemCount || 20}+ items
+                    <span className="text-xs font-bold text-emerald-800 bg-[#EAF3EE] px-3 py-1 rounded-full border border-[#084236]/10">
+                      {count} {count === 1 ? "medicine" : "medicines"}
                     </span>
                   </div>
 

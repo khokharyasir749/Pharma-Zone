@@ -10,7 +10,7 @@ import {
   Compass,
   LayoutGrid,
 } from "lucide-react";
-import { CATEGORIES } from "@/data/medicines";
+import { CATEGORIES, MEDICINES_DATA } from "@/data/medicines";
 
 interface CategoryBarProps {
   selectedCategory: string | null;
@@ -30,6 +30,8 @@ export function CategoryBar({
   selectedCategory,
   onSelectCategory,
 }: CategoryBarProps) {
+  const totalCount = MEDICINES_DATA.length;
+
   return (
     <div className="w-full overflow-x-auto py-2 no-scrollbar">
       <div className="flex items-center gap-2 sm:gap-2.5 min-w-max pb-1">
@@ -43,10 +45,21 @@ export function CategoryBar({
         >
           <LayoutGrid className="w-3.5 h-3.5" />
           <span>All Medicines</span>
+          <span
+            className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+              selectedCategory === null
+                ? "bg-white/20 text-[#EAF3EE]"
+                : "bg-slate-100 text-slate-500"
+            }`}
+          >
+            {totalCount}
+          </span>
         </button>
 
         {CATEGORIES.map((category) => {
           const isSelected = selectedCategory === category.name;
+          const count = MEDICINES_DATA.filter((m) => m.category === category.name).length;
+
           return (
             <button
               key={category.id}
@@ -61,17 +74,15 @@ export function CategoryBar({
                 {ICON_MAP[category.icon] || <Pill className="w-3.5 h-3.5" />}
               </span>
               <span>{category.name}</span>
-              {category.itemCount && (
-                <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full ${
-                    isSelected
-                      ? "bg-white/20 text-[#EAF3EE]"
-                      : "bg-slate-100 text-slate-500"
-                  }`}
-                >
-                  {category.itemCount}
-                </span>
-              )}
+              <span
+                className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                  isSelected
+                    ? "bg-white/20 text-[#EAF3EE]"
+                    : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                {count}
+              </span>
             </button>
           );
         })}

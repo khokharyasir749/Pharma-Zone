@@ -37,6 +37,15 @@ export default function HomePage() {
   const [rxFilter, setRxFilter] = useState<"all" | "otc" | "rx">("all");
   const [sortBy, setSortBy] = useState<"popular" | "price-asc" | "price-desc" | "rating">("popular");
 
+  const otcCount = useMemo(
+    () => MEDICINES_DATA.filter((m) => !m.requiresPrescription).length,
+    []
+  );
+  const rxCount = useMemo(
+    () => MEDICINES_DATA.filter((m) => m.requiresPrescription).length,
+    []
+  );
+
   // Real-time filter and sort medicines across name, formula, brand, category and Rx status
   const filteredMedicines = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
@@ -143,7 +152,7 @@ export default function HomePage() {
 
               <button
                 onClick={() => setRxFilter("all")}
-                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   rxFilter === "all"
                     ? "bg-[#084236] text-white shadow-2xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -154,24 +163,24 @@ export default function HomePage() {
 
               <button
                 onClick={() => setRxFilter("otc")}
-                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   rxFilter === "otc"
                     ? "bg-[#084236] text-white shadow-2xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                OTC (Over The Counter)
+                OTC (Over The Counter) ({otcCount})
               </button>
 
               <button
                 onClick={() => setRxFilter("rx")}
-                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   rxFilter === "rx"
                     ? "bg-[#084236] text-white shadow-2xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                Rx Required
+                Rx Required ({rxCount})
               </button>
             </div>
 
