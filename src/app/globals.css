@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-primary: #084236;
+    --brand-dark: #052e25;
+    --brand-mint: #EAF3EE;
+    --brand-surface: #F6F8F6;
+    --brand-emerald: #059669;
+    --brand-accent: #10B981;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #F6F8F6;
+    color: #0f172a;
+  }
+
+  body {
+    background-color: #F6F8F6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Custom Webkit Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #EAF3EE;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #084236;
+    border-radius: 9999px;
+    border: 2px solid #EAF3EE;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #052e25;
+  }
+
+  /* Firefox Scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #084236 #EAF3EE;
+  }
+}
+
+@layer utilities {
+  /* Glassmorphism effects */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(8, 66, 54, 0.08);
+  }
+
+  .glass-dark {
+    background: rgba(5, 46, 37, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(234, 243, 238, 0.12);
+  }
+
+  .glass-mint {
+    background: rgba(234, 243, 238, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(8, 66, 54, 0.06);
+  }
+
+  /* Gradient textiles and borders */
+  .text-brand-gradient {
+    background: linear-gradient(135deg, #084236 0%, #10B981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Subtle pulsing glow for live badge */
+  .pulse-emerald {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulse-emerald-anim 2s infinite cubic-bezier(0.66, 0, 0, 1);
+  }
+
+  @keyframes pulse-emerald-anim {
+    to {
+      box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+    }
+  }
+}
