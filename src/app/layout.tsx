@@ -1,6 +1,6 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
-import "./globals.css";
 import { PharmacyProvider } from "@/context/PharmacyContext";
 import { CartDrawer } from "@/components/pharmacy/CartDrawer";
 import { PrescriptionUploadModal } from "@/components/pharmacy/PrescriptionUploadModal";
