@@ -5,6 +5,7 @@ import { PharmacyProvider } from "@/context/PharmacyContext";
 import { CartDrawer } from "@/components/pharmacy/CartDrawer";
 import { PrescriptionUploadModal } from "@/components/pharmacy/PrescriptionUploadModal";
 import { CheckoutModal } from "@/components/pharmacy/CheckoutModal";
+import { ProductDetailModal } from "@/components/pharmacy/ProductDetailModal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -47,6 +48,7 @@ export default function RootLayout({
           <CartDrawer />
           <PrescriptionUploadModal />
           <CheckoutModal />
+          <ProductDetailModal />
         </PharmacyProvider>
       </body>
     </html>

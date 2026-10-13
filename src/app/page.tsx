@@ -11,6 +11,8 @@ import {
   Flame,
   Truck,
   Sparkles,
+  MessageCircle,
+  Upload,
 } from "lucide-react";
 import { Navbar } from "@/components/pharmacy/Navbar";
 import { HeroCard } from "@/components/pharmacy/HeroCard";
@@ -23,20 +25,30 @@ import { usePharmacy } from "@/context/PharmacyContext";
 import { Button } from "@/components/ui/Button";
 
 export default function HomePage() {
-  const { selectedCity, setIsPrescriptionModalOpen } = usePharmacy();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const {
+    selectedCity,
+    setIsPrescriptionModalOpen,
+    searchQuery,
+    setSearchQuery,
+    selectedCategory,
+    setSelectedCategory,
+  } = usePharmacy();
+
   const [rxFilter, setRxFilter] = useState<"all" | "otc" | "rx">("all");
   const [sortBy, setSortBy] = useState<"popular" | "price-asc" | "price-desc" | "rating">("popular");
 
-  // Filter and sort medicines
+  // Real-time filter and sort medicines across name, formula, brand, category and Rx status
   const filteredMedicines = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+
     return MEDICINES_DATA.filter((med) => {
-      // Search matching (name, formula, or brand)
+      // Search matching (brand name, generic active salt/formula, or manufacturer brand)
       const matchesSearch =
-        med.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        med.genericFormula.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        med.brand.toLowerCase().includes(searchQuery.toLowerCase());
+        !q ||
+        med.name.toLowerCase().includes(q) ||
+        med.genericFormula.toLowerCase().includes(q) ||
+        med.brand.toLowerCase().includes(q) ||
+        med.category.toLowerCase().includes(q);
 
       // Category matching
       const matchesCategory =
@@ -59,23 +71,29 @@ export default function HomePage() {
     });
   }, [searchQuery, selectedCategory, rxFilter, sortBy]);
 
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory(null);
+    setRxFilter("all");
+    setSortBy("popular");
+  };
+
+  const whatsAppInquiryUrl = `https://wa.me/923280790704?text=${encodeURIComponent(
+    `Hello PharmaZone, I searched for "${searchQuery || "medicines"}" in ${selectedCity} but couldn't find it. Can you help me arrange it?`
+  )}`;
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F6F8F6]">
       {/* 1. Header & Pill Bar Architecture */}
-      <Navbar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-      />
+      <Navbar />
 
       <main className="flex-1">
         {/* 2. Dribbble-Identical Hero Card */}
         <HeroCard />
 
-        {/* 3. Flash Sale Section (Dribbble Layout) */}
+        {/* 3. Flash Sale / Catalog Section */}
         <section id="flash-sale-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-          {/* Section Heading with Live Indicator Dot and "View All Products" text button */}
+          {/* Section Heading with Live Indicator Dot and "View All Products" button */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 pb-2 border-b border-slate-200/60">
             <div>
               <div className="flex items-center gap-2 mb-1.5">
@@ -90,7 +108,7 @@ export default function HomePage() {
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display flex items-center gap-2.5">
-                <span>Flash Sale</span>
+                <span>Flash Sale & Catalog</span>
                 <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#EAF3EE] text-[#084236] border border-[#084236]/15">
                   Verified DRAP MRP
                 </span>
@@ -99,11 +117,7 @@ export default function HomePage() {
 
             {/* "View All Products" text button with an arrow */}
             <button
-              onClick={() => {
-                setSelectedCategory(null);
-                setSearchQuery("");
-                setRxFilter("all");
-              }}
+              onClick={handleResetFilters}
               className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#084236] hover:text-[#059669] transition-colors group self-start sm:self-auto"
             >
               <span>View All Products</span>
@@ -121,6 +135,7 @@ export default function HomePage() {
 
           {/* Filtering & Sorting Controls Bar */}
           <div className="bg-white rounded-2xl p-3.5 sm:p-4 mb-8 border border-slate-200/80 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4">
+            {/* Quick Filter Buttons: All, OTC, Rx Required */}
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs font-bold text-slate-500 flex items-center gap-1.5 mr-1">
                 <Filter className="w-3.5 h-3.5 text-slate-400" /> Filter:
@@ -128,35 +143,35 @@ export default function HomePage() {
 
               <button
                 onClick={() => setRxFilter("all")}
-                className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
                   rxFilter === "all"
                     ? "bg-[#084236] text-white shadow-2xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                All Items ({MEDICINES_DATA.length})
+                All Medicines ({MEDICINES_DATA.length})
               </button>
 
               <button
                 onClick={() => setRxFilter("otc")}
-                className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
                   rxFilter === "otc"
                     ? "bg-[#084236] text-white shadow-2xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                OTC (No Rx Needed)
+                OTC (Over The Counter)
               </button>
 
               <button
                 onClick={() => setRxFilter("rx")}
-                className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
                   rxFilter === "rx"
                     ? "bg-[#084236] text-white shadow-2xs"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
-                Prescription Only (Rx)
+                Rx Required
               </button>
             </div>
 
@@ -176,8 +191,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Results Summary */}
-          <div className="flex items-center justify-between mb-5">
+          {/* Active Search / Category Status Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
             <h3 className="text-sm sm:text-base font-bold text-slate-900 font-display">
               {selectedCategory || "Featured Pakistani Medicines"}
               <span className="text-xs font-normal text-slate-500 ml-2">
@@ -185,10 +200,26 @@ export default function HomePage() {
               </span>
             </h3>
 
-            {searchQuery && (
-              <p className="text-xs text-[#059669] font-semibold">
-                Filtering by "{searchQuery}"
-              </p>
+            {(searchQuery || selectedCategory || rxFilter !== "all") && (
+              <div className="flex items-center gap-2 text-xs">
+                {searchQuery && (
+                  <span className="inline-flex items-center gap-1 bg-[#EAF3EE] text-[#084236] px-2.5 py-1 rounded-full font-semibold">
+                    Keyword: "{searchQuery}"
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="ml-1 text-slate-400 hover:text-slate-700"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                <button
+                  onClick={handleResetFilters}
+                  className="text-xs text-[#059669] hover:underline font-bold"
+                >
+                  Clear all filters
+                </button>
+              </div>
             )}
           </div>
 
@@ -200,41 +231,60 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/80 max-w-lg mx-auto">
+            /* Friendly Pakistani Fallback Message */
+            <div className="bg-white rounded-3xl p-8 sm:p-12 text-center border border-slate-200/80 max-w-xl mx-auto shadow-sm">
               <div className="w-16 h-16 rounded-full bg-[#EAF3EE] text-[#084236] flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8" />
               </div>
-              <h3 className="text-base font-bold text-slate-800 mb-1">
-                No matching medicines found
+
+              <span className="text-xs font-bold uppercase tracking-widest text-[#059669] bg-[#EAF3EE] px-3 py-1 rounded-full border border-[#084236]/15">
+                Medication Inquiry
+              </span>
+
+              <h3 className="text-2xl font-black text-slate-900 mt-3 font-display">
+                Dawaai nahi mili?
               </h3>
-              <p className="text-xs text-slate-500 mb-6">
-                Try searching for the generic formula or brand name, or submit your prescription slip directly.
+
+              <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mt-2 leading-relaxed">
+                If your required brand or active generic formula isn't listed, our clinical Pharm-D team can procure and dispatch it immediately from licensed DRAP distributors across Pakistan.
               </p>
-              <div className="flex justify-center gap-3">
-                <Button
-                  onClick={() => {
-                    setSearchQuery("");
-                    setSelectedCategory(null);
-                    setRxFilter("all");
-                  }}
-                  variant="outline"
-                  size="sm"
-                >
-                  Reset Filters
-                </Button>
+
+              {/* Action Buttons: Upload Slip & WhatsApp us at 0328-0790704 */}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6">
                 <Button
                   onClick={() => setIsPrescriptionModalOpen(true)}
                   variant="primary"
-                  size="sm"
+                  size="md"
+                  className="w-full sm:w-auto"
                 >
-                  Upload Prescription
+                  <Upload className="w-4 h-4 mr-2" />
+                  <span>Upload Prescription Slip</span>
                 </Button>
+
+                <a
+                  href={whatsAppInquiryUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm py-3 px-5 rounded-2xl shadow-md transition-all active:scale-95"
+                >
+                  <MessageCircle className="w-4 h-4 fill-white" />
+                  <span>WhatsApp Us (0328-0790704)</span>
+                </a>
+              </div>
+
+              <div className="pt-4">
+                <button
+                  onClick={handleResetFilters}
+                  className="text-xs text-slate-500 hover:text-[#084236] hover:underline font-semibold"
+                >
+                  Reset all filters & view full catalog
+                </button>
               </div>
             </div>
           )}
         </section>
 
-        {/* 4. Promotional Split Cards (Directly from the Reference) */}
+        {/* 4. Promotional Split Cards */}
         <PromoSplitCards />
 
         {/* Cold-Chain & Quality Assurance Assurance */}

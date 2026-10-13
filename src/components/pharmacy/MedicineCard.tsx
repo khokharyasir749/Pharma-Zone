@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Star, Heart, Plus, Minus, ShoppingCart, Check } from "lucide-react";
+import { Star, Heart, Plus, Minus, ShoppingCart, Eye } from "lucide-react";
 import { Medicine } from "@/types/pharmacy";
 import { usePharmacy } from "@/context/PharmacyContext";
 import { MedicineVisual } from "@/components/pharmacy/MedicineVisual";
@@ -11,7 +11,7 @@ interface MedicineCardProps {
 }
 
 export function MedicineCard({ medicine }: MedicineCardProps) {
-  const { cart, addToCart, updateQuantity } = usePharmacy();
+  const { cart, addToCart, updateQuantity, setQuickViewMedicine } = usePharmacy();
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   const cartItem = cart.find((item) => item.medicine.id === medicine.id);
@@ -24,8 +24,15 @@ export function MedicineCard({ medicine }: MedicineCardProps) {
       ? `${Math.round(((medicine.oldPricePKR - medicine.pricePKR) / medicine.oldPricePKR) * 100)}% OFF`
       : "10% OFF";
 
+  const handleCardClick = () => {
+    setQuickViewMedicine(medicine);
+  };
+
   return (
-    <div className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-[#084236]/20 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+    <div
+      onClick={handleCardClick}
+      className="group relative bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-[#084236]/20 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 cursor-pointer select-none"
+    >
       {/* Top Header: Discount chip (top left) & Wishlist heart toggle (top right) */}
       <div className="flex items-center justify-between gap-2 mb-3">
         {/* Discount percentage chip */}
@@ -35,7 +42,11 @@ export function MedicineCard({ medicine }: MedicineCardProps) {
 
         {/* Wishlist heart toggle */}
         <button
-          onClick={() => setIsWishlisted(!isWishlisted)}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsWishlisted(!isWishlisted);
+          }}
           className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
             isWishlisted
               ? "bg-rose-50 text-rose-500 scale-105"
@@ -61,6 +72,14 @@ export function MedicineCard({ medicine }: MedicineCardProps) {
           strength={medicine.strength}
           className="w-full h-full object-contain"
         />
+
+        {/* Quick View Hover Indicator */}
+        <div className="absolute inset-0 bg-[#084236]/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <span className="bg-white/90 backdrop-blur-xs text-[#084236] font-bold text-[11px] px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5 transform scale-95 group-hover:scale-100 transition-transform">
+            <Eye className="w-3.5 h-3.5" />
+            <span>Quick View</span>
+          </span>
+        </div>
 
         {/* Prescription indicator badge */}
         <div className="absolute bottom-2 left-2.5">
@@ -128,9 +147,16 @@ export function MedicineCard({ medicine }: MedicineCardProps) {
       {/* Subtle full-width "Add to Cart" button */}
       <div className="w-full pt-1">
         {currentQuantity > 0 ? (
-          <div className="w-full flex items-center justify-between bg-[#EAF3EE] text-[#084236] rounded-2xl px-3 py-2 border border-[#084236]/20">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full flex items-center justify-between bg-[#EAF3EE] text-[#084236] rounded-2xl px-3 py-2 border border-[#084236]/20"
+          >
             <button
-              onClick={() => updateQuantity(medicine.id, currentQuantity - 1)}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                updateQuantity(medicine.id, currentQuantity - 1);
+              }}
               className="w-7 h-7 rounded-xl bg-white text-[#084236] hover:bg-[#084236] hover:text-white flex items-center justify-center transition-all shadow-2xs active:scale-95"
               aria-label="Decrease quantity"
             >
@@ -141,7 +167,11 @@ export function MedicineCard({ medicine }: MedicineCardProps) {
               <span className="text-[#084236] text-sm">{currentQuantity}</span>
             </div>
             <button
-              onClick={() => updateQuantity(medicine.id, currentQuantity + 1)}
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                updateQuantity(medicine.id, currentQuantity + 1);
+              }}
               className="w-7 h-7 rounded-xl bg-white text-[#084236] hover:bg-[#084236] hover:text-white flex items-center justify-center transition-all shadow-2xs active:scale-95"
               aria-label="Increase quantity"
             >
@@ -150,7 +180,11 @@ export function MedicineCard({ medicine }: MedicineCardProps) {
           </div>
         ) : (
           <button
-            onClick={() => addToCart(medicine, 1)}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              addToCart(medicine, 1);
+            }}
             className="w-full flex items-center justify-center gap-2 bg-[#F6F9F7] hover:bg-[#084236] text-[#084236] hover:text-white border border-[#084236]/15 hover:border-[#084236] font-bold text-xs py-2.5 px-4 rounded-2xl transition-all duration-200 active:scale-[0.98] group/btn"
           >
             <ShoppingCart className="w-3.5 h-3.5 text-[#084236] group-hover/btn:text-white transition-colors" />

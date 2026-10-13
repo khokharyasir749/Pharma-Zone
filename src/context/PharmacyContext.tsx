@@ -20,6 +20,14 @@ interface PharmacyContextType {
   setIsPrescriptionModalOpen: (open: boolean) => void;
   isCheckoutOpen: boolean;
   setIsCheckoutOpen: (open: boolean) => void;
+  // Global search & Category filter state
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  selectedCategory: string | null;
+  setSelectedCategory: (category: string | null) => void;
+  // Quick View Modal state
+  quickViewMedicine: Medicine | null;
+  setQuickViewMedicine: (medicine: Medicine | null) => void;
 }
 
 const PharmacyContext = createContext<PharmacyContextType | undefined>(undefined);
@@ -30,6 +38,9 @@ export function PharmacyProvider({ children }: { children: React.ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isPrescriptionModalOpen, setIsPrescriptionModalOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [quickViewMedicine, setQuickViewMedicine] = useState<Medicine | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Restore cart and city from localStorage on mount
@@ -128,6 +139,12 @@ export function PharmacyProvider({ children }: { children: React.ReactNode }) {
         setIsPrescriptionModalOpen,
         isCheckoutOpen,
         setIsCheckoutOpen,
+        searchQuery,
+        setSearchQuery,
+        selectedCategory,
+        setSelectedCategory,
+        quickViewMedicine,
+        setQuickViewMedicine,
       }}
     >
       {children}

@@ -18,8 +18,8 @@ import { usePharmacy } from "@/context/PharmacyContext";
 import { PAKISTAN_CITIES, CATEGORIES } from "@/data/medicines";
 
 interface NavbarProps {
-  searchQuery: string;
-  setSearchQuery: (q: string) => void;
+  searchQuery?: string;
+  setSearchQuery?: (q: string) => void;
   selectedCategory?: string | null;
   setSelectedCategory?: (category: string | null) => void;
 }
@@ -37,10 +37,35 @@ export function Navbar({
     cartTotal,
     setIsCartOpen,
     setIsPrescriptionModalOpen,
+    searchQuery: ctxSearchQuery,
+    setSearchQuery: ctxSetSearchQuery,
+    selectedCategory: ctxSelectedCategory,
+    setSelectedCategory: ctxSetSelectedCategory,
   } = usePharmacy();
 
   const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+
+  const currentSearch = searchQuery !== undefined ? searchQuery : ctxSearchQuery;
+  const handleSearchChange = (val: string) => {
+    if (setSearchQuery) setSearchQuery(val);
+    ctxSetSearchQuery(val);
+  };
+
+  const currentCategory =
+    selectedCategory !== undefined ? selectedCategory : ctxSelectedCategory;
+  const handleCategoryChange = (val: string | null) => {
+    if (setSelectedCategory) setSelectedCategory(val);
+    ctxSetSelectedCategory(val);
+  };
+
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const el = document.getElementById("flash-sale-section");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const handleCopyCode = () => {
     navigator.clipboard?.writeText("PHARMA25");
@@ -130,17 +155,18 @@ export function Navbar({
           </div>
 
           {/* Unified Pill Search (Center) */}
-          <div className="flex-1 max-w-2xl mx-1 sm:mx-2">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="flex-1 max-w-2xl mx-1 sm:mx-2"
+          >
             <div className="relative flex items-center w-full bg-white rounded-full border border-slate-200/90 shadow-sm hover:border-[#084236]/30 focus-within:border-[#084236] focus-within:ring-2 focus-within:ring-[#084236]/15 transition-all p-1.5 pl-3 sm:pl-4">
               {/* Category dropdown selector inside with divider */}
               <div className="relative shrink-0 pr-2 sm:pr-3 mr-2 sm:mr-3 border-r border-slate-200">
                 <select
-                  value={selectedCategory || "all"}
+                  value={currentCategory || "all"}
                   onChange={(e) => {
                     const val = e.target.value;
-                    if (setSelectedCategory) {
-                      setSelectedCategory(val === "all" ? null : val);
-                    }
+                    handleCategoryChange(val === "all" ? null : val);
                   }}
                   className="bg-transparent text-xs font-semibold text-slate-700 hover:text-[#084236] focus:outline-none cursor-pointer pr-4 appearance-none text-ellipsis max-w-[95px] sm:max-w-[130px]"
                 >
@@ -157,15 +183,19 @@ export function Navbar({
               {/* Clean text input for medicines / active salts */}
               <input
                 type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={currentSearch}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearchSubmit();
+                }}
                 placeholder="Search medicines or active salts (e.g. Paracetamol, Risek)..."
                 className="w-full bg-transparent text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none font-medium truncate"
               />
 
-              {searchQuery && (
+              {currentSearch && (
                 <button
-                  onClick={() => setSearchQuery("")}
+                  type="button"
+                  onClick={() => handleSearchChange("")}
                   className="text-xs text-slate-400 hover:text-slate-600 px-2 py-0.5 mr-1"
                 >
                   Clear
@@ -174,14 +204,14 @@ export function Navbar({
 
               {/* Contained green submit action button inside the pill */}
               <button
-                type="button"
-                aria-label="Search"
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#084236] hover:bg-[#052e25] active:scale-95 text-white flex items-center justify-center shrink-0 transition-all shadow-sm"
+                type="submit"
+                aria-label="Search medicines"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#084236] hover:bg-[#052e25] active:scale-95 text-white flex items-center justify-center shrink-0 transition-all shadow-sm cursor-pointer"
               >
                 <Search className="w-4 h-4 text-white" />
               </button>
             </div>
-          </div>
+          </form>
 
           {/* Right Utility Group */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
